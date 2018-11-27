@@ -43,9 +43,8 @@ class ApiController extends RestController
     {
 
         try {
-            $params = Yii::$app->request->get();
-
-            $log = json_decode($params['log'], true);
+            $params = Yii::$app->request->getRawBody();
+            $log = json_decode($params, true);
             $hostname = $log['hostname'];
             $current_time = date('Y-m-d H:i:s', strtotime($log['query_time']));
             $transaction = \Yii::$app->getDb()->beginTransaction();
