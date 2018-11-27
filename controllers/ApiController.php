@@ -38,7 +38,9 @@ class ApiController extends RestController
     public function actionWatchGpu()
     {
         try {
-            return $this->formatRestResult(self::SUCCESS, []);
+            $params = Yii::$app->request->post();
+
+            return $this->formatRestResult(self::SUCCESS, $params);
         } catch (\Exception $e) {
             return $this->formatRestResult(self::FAILURE, $e->getMessage());
         }
