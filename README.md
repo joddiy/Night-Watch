@@ -7,4 +7,4 @@ sudo pip install requests
 
 ## crontab
 
-* * * * * /usr/bin/python /home/worker/Night-Watch/py/watch_gpu.py
+```* * * * * /usr/bin/python /home/worker/Night-Watch/py/watch_gpu.py```
