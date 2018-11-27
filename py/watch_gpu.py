@@ -10,8 +10,8 @@ fp = StringIO()
 
 gpustats.print_json(fp=fp)
 
-res = json.loads(fp.getvalue())
+print(fp.getvalue())
 
-r = requests.post("http://ncrs.d2.comp.nus.edu.sg/api/watch-gpu", data=res)
+r = requests.post("http://ncrs.d2.comp.nus.edu.sg/api/watch-gpu", data={"log":fp.getvalue()})
 
 print(r.text)
