@@ -3,7 +3,6 @@ from six.moves import cStringIO as StringIO
 import json
 import requests
 
-
 gpustats = gpustat.new_query()
 
 fp = StringIO()
