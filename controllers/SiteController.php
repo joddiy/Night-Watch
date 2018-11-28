@@ -22,15 +22,108 @@ class SiteController extends Controller
 
     public function actionGpu()
     {
+        $params = Yii::$app->request->get();
+        $current_cluster = [];
+        if (!empty($params['cluster'])) {
+            # history of power rate
+            # history of memory rate
+
+            # current power rate
+            # current memory rate
+            $current_cluster['name'] = $params['cluster'];
+            $gpus = [];
+            $sql = <<<EOF
+select c.gpu_order, round(power_draw / power_max * 100, 2) as power_rate, round(memory_used / memory_total * 100, 2) as memory_rate, d.add_time
+from gpu_list c left join gpu_log d on c.gpu_id = d.gpu_id
+where log_id in (select max(b.log_id) as log_id
+                 from gpu_list a
+                        left join gpu_log b on a.gpu_id = b.gpu_id
+                 where a.cluster = :cluster
+                 group by b.gpu_id);
+EOF;
+            $ret = \Yii::$app->getDb()->createCommand($sql, [
+                ':cluster' => $params['cluster']
+            ])->query();
+            foreach ($ret as $item) {
+                $gpu_order = $item['gpu_order'];
+                if (empty($gpus[$gpu_order])) {
+                    $gpus[$gpu_order] = [];
+                }
+                $gpus[$gpu_order]['power_rate'] = $item['power_rate'];
+                $gpus[$gpu_order]['memory_rate'] = $item['memory_rate'];
+                $gpus[$gpu_order]['add_time'] = $item['add_time'];
+            }
+            # current ps
+            $sql = <<<EOF
+select gpu_order, count(1) as ps_amount
+from gpu_list c
+       left join gpu_log a on c.gpu_id = a.gpu_id
+       left join gpu_ps b on a.log_id = b.log_id
+where a.log_id in (select max(b.log_id) as log_id
+                   from gpu_list a
+                          left join gpu_log b on a.gpu_id = b.gpu_id
+                   where a.cluster = :cluster
+                   group by b.gpu_id)
+group by a.gpu_id;
+EOF;
+            $ret = \Yii::$app->getDb()->createCommand($sql, [
+                ':cluster' => $params['cluster']
+            ])->query();
+            foreach ($ret as $item) {
+                $gpu_order = $item['gpu_order'];
+                if (empty($gpus[$gpu_order])) {
+                    $gpus[$gpu_order] = [];
+                }
+                $gpus[$gpu_order]['ps_amount'] = $item['ps_amount'];
+            }
+            $current_cluster['gpus'] = $gpus;
+            # Users
+            $users = [];
+            $sql = <<<EOF
+select gpu_order,
+       b.username,
+       count(1)                                                  as ps_amount,
+       round(sum(gpu_memory_usage) / max(memory_total) * 100, 2) as user_rate
+from gpu_list c
+       left join gpu_log a on c.gpu_id = a.gpu_id
+       left join gpu_ps b on a.log_id = b.log_id
+where a.log_id in (select max(b.log_id) as log_id
+                   from gpu_list a
+                          left join gpu_log b on a.gpu_id = b.gpu_id
+                   where a.cluster = :cluster
+                   group by b.gpu_id)
+group by a.gpu_id, b.username
+order by gpu_order, user_rate DESC
+EOF;
+            $ret = \Yii::$app->getDb()->createCommand($sql, [
+                ':cluster' => $params['cluster']
+            ])->query();
+            foreach ($ret as $item) {
+                $gpu_order = $item['gpu_order'];
+                if (empty($users[$gpu_order])) {
+                    $users[$gpu_order] = [];
+                }
+                $tmp_item = [];
+                $tmp_item['username'] = $item['username'];
+                $tmp_item['ps_amount'] = $item['ps_amount'];
+                $tmp_item['user_rate'] = $item['user_rate'];
+                $users[$gpu_order][] = $tmp_item;
+            }
+            $current_cluster['users'] = $users;
+        }
         // cluster and gpu amount
         $sql = <<<EOF
-select cluster as name, count(1) as amount
-from gpu_list
-group by cluster;
+select a.cluster as name, count(1) as amount, round(sum(c.memory_used) / sum(c.memory_total) * 100, 2) as use_r
+from gpu_list a
+       left join (select gpu_id, max(log_id) as log_id from gpu_log group by gpu_id) as b on a.gpu_id = b.gpu_id
+       left join gpu_log c on b.log_id = c.log_id
+group by a.cluster
+
 EOF;
         $clusters = \Yii::$app->getDb()->createCommand($sql)->query();
         return $this->render('gpu', [
             'clusters' => $clusters,
+            'current_cluster' => $current_cluster
         ]);
     }
 
