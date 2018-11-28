@@ -39,13 +39,13 @@ class SiteController extends Controller
             $current_cluster['name'] = $params['cluster'];
             $gpus = [];
             $sql = <<<EOF
-select c.gpu_order, round(power_draw / power_max * 100, 2) as power_rate, round(memory_used / memory_total * 100, 2) as memory_rate, d.add_time
+select c.gpu_order, utilization as power_rate, round(memory_used / memory_total * 100, 2) as memory_rate, d.add_time
 from gpu_list c left join gpu_log d on c.gpu_id = d.gpu_id
 where log_id in (select max(b.log_id) as log_id
                  from gpu_list a
                         left join gpu_log b on a.gpu_id = b.gpu_id
                  where a.cluster = :cluster
-                 group by b.gpu_id);
+                 group by b.gpu_id)
 EOF;
             $ret = \Yii::$app->getDb()->createCommand($sql, [
                 ':cluster' => $params['cluster']

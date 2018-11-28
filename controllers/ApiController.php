@@ -127,7 +127,7 @@ EOF;
             if (empty($cache)) {
                 $sql = <<<EOF
 select a.gpu_order,
-       round(power_draw / power_max * 100, 2)     as power_rate,
+       utilization     as power_rate,
        round(memory_used / memory_total * 100, 2) as memory_rate,
        b.add_time
 from gpu_list a

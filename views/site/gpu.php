@@ -125,7 +125,7 @@ $faker = Factory::create();
                                             <!-- User Online -->
                                             <div class="text-center">
                                                 <span class="text-3x text-thin"><?= $gpu['power_rate'] ?>%</span>
-                                                <p>Current Power Usage</p>
+                                                <p>Current Utilization</p>
                                             </div>
                                         </div>
                                         <div class="col-xs-3">
@@ -136,7 +136,6 @@ $faker = Factory::create();
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
                             </div>
