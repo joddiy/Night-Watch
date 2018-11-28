@@ -24,6 +24,9 @@ class SiteController extends Controller
     {
         $params = Yii::$app->request->get();
         $current_cluster = [];
+        if (empty($params['cluster'])) {
+            $params['cluster'] = "ncra";
+        }
         if (!empty($params['cluster'])) {
             # history of power rate
             # history of memory rate

@@ -16,7 +16,7 @@ $this->title = 'GPU Monitor';
 
 $this->params['breadcrumbs'][] = $this->title;
 
-
+AppAsset::addCss($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.css');
 AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.js');
 AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/raphael-js/raphael.min.js');
 AppAsset::addScript($this, '/js/gpu.js');
@@ -73,12 +73,12 @@ $faker = Factory::create();
         }
         ?>
     </div>
-
     <?php
     if (!empty($current_cluster)) {
         $current_cluster_name = $current_cluster['name'];
         foreach ($current_cluster['gpus'] as $key => $gpu) {
             ?>
+            <input id="current_cluster_name" type="hidden" value="<?= $current_cluster['name'] ?>"/>
             <h3 class="text-thin mar-btm"><?php echo strtoupper($current_cluster_name . " #" . $key) ?></h3>
             <div class="row">
                 <div class="col-lg-6">

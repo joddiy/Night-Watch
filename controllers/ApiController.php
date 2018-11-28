@@ -105,4 +105,39 @@ EOF;
             return $this->formatRestResult(self::FAILURE, $e->getMessage());
         }
     }
+
+    public function actionGetGpuHistory()
+    {
+        try {
+            $params = Yii::$app->request->get();
+            $data = [];
+            $sql = <<<EOF
+select a.gpu_order,
+       round(power_draw / power_max * 100, 2)     as power_rate,
+       round(memory_used / memory_total * 100, 2) as memory_rate,
+       b.add_time
+from gpu_list a
+       left join gpu_log b on a.gpu_id = b.gpu_id
+where a.cluster = :cluster
+  and b.add_time >= now() - INTERVAL 6 HOUR
+EOF;
+            $ret = \Yii::$app->getDb()->createCommand($sql, [
+                ':cluster' => $params['cluster']
+            ])->query();
+            foreach ($ret as $item) {
+                $gpu_order = $item['gpu_order'];
+                if (empty($data[$gpu_order])) {
+                    $data[$gpu_order] = [];
+                }
+                $tmp_item = [];
+                $tmp_item['power_rate'] = $item['power_rate'];
+                $tmp_item['memory_rate'] = $item['memory_rate'];
+                $tmp_item['add_time'] = $item['add_time'];
+                $data[$gpu_order][] = $tmp_item;
+            }
+            return $this->formatRestResult(self::SUCCESS, $data);
+        } catch (\Exception $e) {
+            return $this->formatRestResult(self::FAILURE, $e->getMessage());
+        }
+    }
 }
