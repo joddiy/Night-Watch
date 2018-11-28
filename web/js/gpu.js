@@ -1,4 +1,9 @@
 $(window).on('load', function () {
+    $(".clickable_panel").click(function () {
+        let cluster = $(this).find("input")[0].value;
+        window.location.href = "/site/gpu?cluster="+cluster;
+    });
+
     var day_data = [
         {"elapsed": "2013 - 01", "value": 24, b: 2},
         {"elapsed": "2013 - 02", "value": 34, b: 22},

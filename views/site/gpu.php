@@ -39,7 +39,9 @@ $faker = Factory::create();
 
                 <!--Tile with progress bar (Comments)-->
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                <div class="panel panel-mint panel-colorful" style="background-color: <?= $faker->safeHexColor ?>">
+                <div class="<?= "clickable_panel" ?> panel panel-mint panel-colorful"
+                     style="background-color: <?= $faker->safeHexColor ?>; cursor: pointer">
+                    <input type="hidden" value="<?= $cluster['name'] ?>">
                     <div class="pad-all media">
                         <div class="media-left">
                         <span class="icon-wrap icon-wrap-xs">
@@ -147,24 +149,26 @@ $faker = Factory::create();
                 <div class="col-sm-6">
                     <div class="panel">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Users</h3>
+                            <h3 class="panel-title">Users Memory</h3>
                         </div>
                         <div class="panel-body">
                             <?php
-                            foreach ($current_cluster['users'][$key] as $item) {
-                                $faker->seed(20);
-                                ?>
-                                <!--Small-->
-                                <!--===================================================-->
-                                <p><?= $item['username'] ?> [process: <?= $item['ps_amount'] ?>]</p>
-                                <div class="progress">
-                                    <div style="width: <?= $item['user_rate'] ?>%;
-                                            background-color: <?= $faker->safeHexColor ?>"
-                                         class="progress-bar"><?= $item['user_rate'] ?>%
+                            if (!empty($current_cluster['users'][$key])) {
+                                foreach ($current_cluster['users'][$key] as $item) {
+                                    $faker->seed(20);
+                                    ?>
+                                    <!--Small-->
+                                    <!--===================================================-->
+                                    <p><?= $item['username'] ?> [process: <?= $item['ps_amount'] ?>]</p>
+                                    <div class="progress">
+                                        <div style="width: <?= $item['user_rate'] ?>%;
+                                                background-color: <?= $faker->safeHexColor ?>"
+                                             class="progress-bar"><?= $item['user_rate'] ?>%
+                                        </div>
                                     </div>
-                                </div>
-                                <!--===================================================-->
-                                <?php
+                                    <!--===================================================-->
+                                    <?php
+                                }
                             }
                             ?>
                             <br>

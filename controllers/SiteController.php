@@ -86,7 +86,7 @@ select gpu_order,
        round(sum(gpu_memory_usage) / max(memory_total) * 100, 2) as user_rate
 from gpu_list c
        left join gpu_log a on c.gpu_id = a.gpu_id
-       left join gpu_ps b on a.log_id = b.log_id
+       inner join gpu_ps b on a.log_id = b.log_id
 where a.log_id in (select max(b.log_id) as log_id
                    from gpu_list a
                           left join gpu_log b on a.gpu_id = b.gpu_id
