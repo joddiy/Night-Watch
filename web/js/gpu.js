@@ -20,6 +20,7 @@ $(window).on('load', function () {
                             axes: false,
                             xkey: 'add_time',
                             ykeys: ['memory_rate', 'power_rate'],
+                            ymax: 100,
                             labels: ['Memory Usage', 'Utilization'],
                             yLabelFormat: function (y) {
                                 return y.toString() + ' %';
