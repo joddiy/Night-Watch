@@ -28,9 +28,6 @@ class SiteController extends Controller
             $params['cluster'] = "ncra";
         }
         if (!empty($params['cluster'])) {
-            # history of power rate
-            # history of memory rate
-
             # current power rate
             # current memory rate
             $current_cluster['name'] = $params['cluster'];
@@ -61,7 +58,7 @@ EOF;
 select gpu_order, count(1) as ps_amount
 from gpu_list c
        left join gpu_log a on c.gpu_id = a.gpu_id
-       left join gpu_ps b on a.log_id = b.log_id
+       inner join gpu_ps b on a.log_id = b.log_id
 where a.log_id in (select max(b.log_id) as log_id
                    from gpu_list a
                           left join gpu_log b on a.gpu_id = b.gpu_id

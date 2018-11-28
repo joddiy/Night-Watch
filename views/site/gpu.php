@@ -131,7 +131,7 @@ $faker = Factory::create();
                                         <div class="col-xs-3">
                                             <!-- User Online -->
                                             <div class="text-center">
-                                                <span class="text-3x text-thin"><?= $gpu['ps_amount'] ?></span>
+                                                <span class="text-3x text-thin"><?= empty($gpu['ps_amount']) ? 0 : $gpu['ps_amount'] ?></span>
                                                 <p>Current Processor Amount</p>
                                             </div>
                                         </div>
