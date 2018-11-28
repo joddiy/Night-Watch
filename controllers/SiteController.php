@@ -9,6 +9,9 @@ use yii\web\Response;
 
 class SiteController extends Controller
 {
+    const KEY = "SiteController_";
+    const EXPIRE = 30;
+
     /**
      * Displays homepage.
      *
@@ -27,7 +30,10 @@ class SiteController extends Controller
         if (empty($params['cluster'])) {
             $params['cluster'] = "ncra";
         }
-        if (!empty($params['cluster'])) {
+        // cluster and gpu amount
+        $redis_key = self::KEY . md5("get_gpu_panel_" . $params['cluster']);
+        $cache = Yii::$app->redis->get($redis_key);
+        if (empty($cache)) {
             # current power rate
             # current memory rate
             $current_cluster['name'] = $params['cluster'];
@@ -110,17 +116,28 @@ EOF;
                 $users[$gpu_order][] = $tmp_item;
             }
             $current_cluster['users'] = $users;
+            Yii::$app->redis->set($redis_key, json_encode($current_cluster));
+            Yii::$app->redis->expire($redis_key, self::EXPIRE);
+        } else {
+            $current_cluster = json_decode($cache, true);
         }
         // cluster and gpu amount
-        $sql = <<<EOF
+        $redis_key = self::KEY . md5("get_gpu_panel_all");
+        $cache = Yii::$app->redis->get($redis_key);
+        if (empty($cache)) {
+            $sql = <<<EOF
 select a.cluster as name, count(1) as amount, round(sum(c.memory_used) / sum(c.memory_total) * 100, 2) as use_r
 from gpu_list a
        left join (select gpu_id, max(log_id) as log_id from gpu_log group by gpu_id) as b on a.gpu_id = b.gpu_id
        left join gpu_log c on b.log_id = c.log_id
 group by a.cluster
-
 EOF;
-        $clusters = \Yii::$app->getDb()->createCommand($sql)->query();
+            $clusters = \Yii::$app->getDb()->createCommand($sql)->queryAll();
+            Yii::$app->redis->set($redis_key, json_encode($clusters));
+            Yii::$app->redis->expire($redis_key, self::EXPIRE);
+        } else {
+            $clusters = json_decode($cache, true);
+        }
         return $this->render('gpu', [
             'clusters' => $clusters,
             'current_cluster' => $current_cluster

@@ -54,6 +54,7 @@ class ComposerStaticInitca92174f94924455cc80624f2ab12859
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Predis\\' => 7,
         ),
         'G' => 
         array (
@@ -162,6 +163,10 @@ class ComposerStaticInitca92174f94924455cc80624f2ab12859
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Predis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

@@ -35,6 +35,8 @@ use yii\db\Exception;
  */
 class ApiController extends RestController
 {
+    const KEY = "ApiController";
+    const EXPIRE = 30;
 
     /**
      * @return array
@@ -88,9 +90,13 @@ class ApiController extends RestController
     public function actionGetServerStatus()
     {
         try {
-            # gpu status
-            $data = [];
-            $sql = <<<EOF
+            // cluster and gpu amount
+            $redis_key = self::KEY . md5("get_gpu_status");
+            $cache = Yii::$app->redis->get($redis_key);
+            if (empty($cache)) {
+                # gpu status
+                $data = [];
+                $sql = <<<EOF
 select round(sum(memory_used) / sum(memory_total) * 100, 2) as memory_rate
 from gpu_log d
 where log_id in (select max(b.log_id) as log_id
@@ -98,8 +104,13 @@ where log_id in (select max(b.log_id) as log_id
                         left join gpu_log b on a.gpu_id = b.gpu_id
                  group by b.gpu_id)
 EOF;
-            $ret = \Yii::$app->getDb()->createCommand($sql)->queryOne();
-            $data['gpu'] = $ret['memory_rate'];
+                $ret = \Yii::$app->getDb()->createCommand($sql)->queryOne();
+                $data['gpu'] = $ret['memory_rate'];
+                Yii::$app->redis->set($redis_key, json_encode($data));
+                Yii::$app->redis->expire($redis_key, self::EXPIRE);
+            } else {
+                $data = json_decode($cache, true);
+            }
             return $this->formatRestResult(self::SUCCESS, $data);
         } catch (\Exception $e) {
             return $this->formatRestResult(self::FAILURE, $e->getMessage());
@@ -111,7 +122,10 @@ EOF;
         try {
             $params = Yii::$app->request->get();
             $data = [];
-            $sql = <<<EOF
+            $redis_key = self::KEY . md5("get_gpu_history_" . $params['cluster']);
+            $cache = Yii::$app->redis->get($redis_key);
+            if (empty($cache)) {
+                $sql = <<<EOF
 select a.gpu_order,
        round(power_draw / power_max * 100, 2)     as power_rate,
        round(memory_used / memory_total * 100, 2) as memory_rate,
@@ -121,19 +135,24 @@ from gpu_list a
 where a.cluster = :cluster
   and b.add_time >= now() - INTERVAL 6 HOUR
 EOF;
-            $ret = \Yii::$app->getDb()->createCommand($sql, [
-                ':cluster' => $params['cluster']
-            ])->query();
-            foreach ($ret as $item) {
-                $gpu_order = $item['gpu_order'];
-                if (empty($data[$gpu_order])) {
-                    $data[$gpu_order] = [];
+                $ret = \Yii::$app->getDb()->createCommand($sql, [
+                    ':cluster' => $params['cluster']
+                ])->query();
+                foreach ($ret as $item) {
+                    $gpu_order = $item['gpu_order'];
+                    if (empty($data[$gpu_order])) {
+                        $data[$gpu_order] = [];
+                    }
+                    $tmp_item = [];
+                    $tmp_item['power_rate'] = $item['power_rate'];
+                    $tmp_item['memory_rate'] = $item['memory_rate'];
+                    $tmp_item['add_time'] = $item['add_time'];
+                    $data[$gpu_order][] = $tmp_item;
                 }
-                $tmp_item = [];
-                $tmp_item['power_rate'] = $item['power_rate'];
-                $tmp_item['memory_rate'] = $item['memory_rate'];
-                $tmp_item['add_time'] = $item['add_time'];
-                $data[$gpu_order][] = $tmp_item;
+                Yii::$app->redis->set($redis_key, json_encode($data));
+                Yii::$app->redis->expire($redis_key, self::EXPIRE);
+            } else {
+                $data = json_decode($cache, true);
             }
             return $this->formatRestResult(self::SUCCESS, $data);
         } catch (\Exception $e) {
