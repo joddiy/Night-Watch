@@ -27,7 +27,7 @@ $(window).on('load', function () {
                             },
                             gridEnabled: false,
                             gridLineColor: 'transparent',
-                            lineColors: ['#1b72bc', '#8eb5e3'],
+                            lineColors: ['#8eb5e3', '#1b72bc'],
                             lineWidth: 0,
                             pointSize: 0,
                             pointFillColors: ['#3e80bd'],
