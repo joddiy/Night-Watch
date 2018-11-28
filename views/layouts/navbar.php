@@ -69,23 +69,23 @@ AppAsset::register($this);
                         </li>
 
                         <!--Menu list item-->
-                        <li>
-                            <a href="/site/cpu">
-                                <i class="fa fa-server"></i>
-                                <span class="menu-title">
-                                <strong>CPU Monitor</strong>
-                        </span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="/site/disk">
-                                <i class="fa fa-hdd-o"></i>
-                                <span class="menu-title">
-                                <strong>Disk Usage</strong>
-                        </span>
-                            </a>
-                        </li>
+<!--                        <li>-->
+<!--                            <a href="/site/cpu">-->
+<!--                                <i class="fa fa-server"></i>-->
+<!--                                <span class="menu-title">-->
+<!--                                <strong>CPU Monitor</strong>-->
+<!--                        </span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!---->
+<!--                        <li>-->
+<!--                            <a href="/site/disk">-->
+<!--                                <i class="fa fa-hdd-o"></i>-->
+<!--                                <span class="menu-title">-->
+<!--                                <strong>Disk Usage</strong>-->
+<!--                        </span>-->
+<!--                            </a>-->
+<!--                        </li>-->
 
                         <li class="list-divider"></li>
 
