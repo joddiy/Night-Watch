@@ -5,6 +5,10 @@
  * fileName :    navbar.php
  */
 
+use app\assets\AppAsset;
+
+AppAsset::addScript($this, "/js/navbar_status.js");
+AppAsset::register($this);
 ?>
 
 <nav id="mainnav-container" style="padding-top: 0">
@@ -104,32 +108,32 @@
                             <ul class="list-group">
                                 <li class="list-header pad-no pad-ver">Server Status</li>
                                 <li class="mar-btm">
-                                    <span class="label label-primary pull-right">15%</span>
+                                    <span id="gpu_span_0" class="label label-primary pull-right"></span>
                                     <p>GPU Usage</p>
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar progress-bar-primary" style="width: 15%;">
-                                            <span class="sr-only">15%</span>
+                                        <div id="gpu_progress" class="progress-bar progress-bar-primary">
+                                            <span id="gpu_span_1" class="sr-only"></span>
                                         </div>
                                     </div>
                                 </li>
-                                <li class="mar-btm">
-                                    <span class="label label-mint pull-right">30%</span>
-                                    <p>CPU Usage</p>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar progress-bar-mint" style="width: 30%;">
-                                            <span class="sr-only">75%</span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="mar-btm">
-                                    <span class="label label-purple pull-right">20%</span>
-                                    <p>Home Usage</p>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar progress-bar-purple" style="width: 20%;">
-                                            <span class="sr-only">75%</span>
-                                        </div>
-                                    </div>
-                                </li>
+                                <!--                                <li class="mar-btm">-->
+                                <!--                                    <span class="label label-mint pull-right">30%</span>-->
+                                <!--                                    <p>CPU Usage</p>-->
+                                <!--                                    <div class="progress progress-sm">-->
+                                <!--                                        <div class="progress-bar progress-bar-mint" style="width: 30%;">-->
+                                <!--                                            <span class="sr-only">75%</span>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </li>-->
+                                <!--                                <li class="mar-btm">-->
+                                <!--                                    <span class="label label-purple pull-right">20%</span>-->
+                                <!--                                    <p>Home Usage</p>-->
+                                <!--                                    <div class="progress progress-sm">-->
+                                <!--                                        <div class="progress-bar progress-bar-purple" style="width: 20%;">-->
+                                <!--                                            <span class="sr-only">75%</span>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </li>-->
                             </ul>
                         </div>
                     </div>

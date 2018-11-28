@@ -84,4 +84,25 @@ class ApiController extends RestController
             return $this->formatRestResult(self::FAILURE, $e->getMessage());
         }
     }
+
+    public function actionGetServerStatus()
+    {
+        try {
+            # gpu status
+            $data = [];
+            $sql = <<<EOF
+select round(sum(memory_used) / sum(memory_total) * 100, 2) as memory_rate
+from gpu_log d
+where log_id in (select max(b.log_id) as log_id
+                 from gpu_list a
+                        left join gpu_log b on a.gpu_id = b.gpu_id
+                 group by b.gpu_id)
+EOF;
+            $ret = \Yii::$app->getDb()->createCommand($sql)->queryOne();
+            $data['gpu'] = $ret['memory_rate'];
+            return $this->formatRestResult(self::SUCCESS, $data);
+        } catch (\Exception $e) {
+            return $this->formatRestResult(self::FAILURE, $e->getMessage());
+        }
+    }
 }
