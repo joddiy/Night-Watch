@@ -29,4 +29,16 @@ class AppAsset extends AssetBundle
 //        'yii\bootstrap\BootstrapAsset',
         'app\assets\NiftyAsset',
     ];
+
+    // add more js file to html
+    public static function addScript($view, $jsFile, $option = [])
+    {
+        $view->registerJsFile($jsFile, $option);
+    }
+
+    // add more css file to html
+    public static function addCss($view, $cssFile, $option = [])
+    {
+        $view->registerCssFile($cssFile, $option);
+    }
 }

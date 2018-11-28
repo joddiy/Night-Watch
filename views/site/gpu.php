@@ -5,6 +5,9 @@
  * fileName :    gpu.php
  */
 
+use app\assets\AppAsset;
+use Faker\Factory;
+
 
 /* @var $clusters */
 /* @var $current_cluster */
@@ -13,10 +16,13 @@ $this->title = 'GPU Monitor';
 
 $this->params['breadcrumbs'][] = $this->title;
 
-use Faker\Factory;
+
+AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.js');
+AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/raphael-js/raphael.min.js');
+AppAsset::addScript($this, '/js/gpu.js');
+AppAsset::register($this);
 
 $faker = Factory::create();
-$faker->seed(0);
 ?>
 
 <div class="site-index">
@@ -26,6 +32,7 @@ $faker->seed(0);
     <div class="row">
 
         <?php
+        $faker->seed(0);
         foreach ($clusters as $cluster) {
             ?>
             <div class="col-sm-3 col-lg-3">
@@ -70,20 +77,19 @@ $faker->seed(0);
         $current_cluster_name = $current_cluster['name'];
         foreach ($current_cluster['gpus'] as $key => $gpu) {
             ?>
-            <h3 id="ncra" class="text-thin mar-btm"><?php echo strtoupper($current_cluster_name . " #" . $key) ?></h3>
+            <h3 class="text-thin mar-btm"><?php echo strtoupper($current_cluster_name . " #" . $key) ?></h3>
             <div class="row">
                 <div class="col-lg-6">
 
                     <!--Network Line Chart-->
                     <!--===================================================-->
-                    <div id="demo-panel-network" class="panel">
+                    <div class="panel">
                         <div class="panel-heading">
                             <h3 class="panel-title">Overview</h3>
                         </div>
 
                         <!--Morris line chart placeholder-->
-                        <div id="morris-chart-history" class="morris-full-content"></div>
-
+                        <div id=<?php echo "morris-chart-" . $current_cluster_name . $key ?> class="morris-full-content"></div>
                         <!--Chart information-->
                         <div class="panel-body bg-primary" style="position:relative;z-index:2">
                             <div class="row">
