@@ -79,7 +79,7 @@ $faker = Factory::create();
         foreach ($current_cluster['gpus'] as $key => $gpu) {
             ?>
             <input id="current_cluster_name" type="hidden" value="<?= $current_cluster['name'] ?>"/>
-            <h3 class="text-thin mar-btm"><?php echo strtoupper($current_cluster_name . " #" . $key) ?></h3>
+            <h3 class="text-thin mar-btm"><?php echo strtoupper($current_cluster_name . " GPU#" . $key) ?></h3>
             <div class="row">
                 <div class="col-lg-6">
 
