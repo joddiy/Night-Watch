@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 AppAsset::addCss($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.css');
 AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.js');
 AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/raphael-js/raphael.min.js');
-AppAsset::addScript($this, '/js/gpu.js', ["position" => View::POS_END]);
+AppAsset::addScript($this, '/js/gpu.js');
 AppAsset::register($this);
 
 $faker = Factory::create();
