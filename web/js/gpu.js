@@ -1,9 +1,4 @@
-$(window).on('load', function () {
-    $(".clickable_panel").click(function () {
-        let cluster = $(this).find("input")[0].value;
-        window.location.href = "/site/gpu?cluster=" + cluster;
-    });
-
+function reload() {
     let current_cluster_name = $('#current_cluster_name').attr("value");
     if (current_cluster_name) {
         $.ajax({
@@ -44,6 +39,13 @@ $(window).on('load', function () {
             }
         });
     }
+}
 
+$(window).on('load', function () {
+    $(".clickable_panel").click(function () {
+        let cluster = $(this).find("input")[0].value;
+        window.location.href = "/site/gpu?cluster=" + cluster;
+    });
 
+    reload();
 });
