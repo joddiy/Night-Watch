@@ -36,7 +36,7 @@ use yii\db\Exception;
 class ApiController extends RestController
 {
     const KEY = "ApiController";
-    const EXPIRE = 30;
+    const EXPIRE = 3;
 
     /**
      * @return array
