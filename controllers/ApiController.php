@@ -129,7 +129,7 @@ EOF;
 select a.gpu_order,
        utilization     as power_rate,
        round(memory_used / memory_total * 100, 2) as memory_rate,
-       b.add_time
+       DATE_FORMAT(b.add_time, "%m-%d %H:%i") as add_time
 from gpu_list a
        left join gpu_log b on a.gpu_id = b.gpu_id
 where a.cluster = :cluster
