@@ -88,7 +88,7 @@ EOF;
             $sql = <<<EOF
 select gpu_order,
        b.username,
-       GROUP_CONCAT(b.cmdline SEPARATOR '\n') as cmdline,
+       GROUP_CONCAT(b.cmdline SEPARATOR '</p><p style="display:list-item;text-align-last:left;word-break:break-all">') as cmdline,
        count(1)                                                  as ps_amount,
        round(sum(gpu_memory_usage) / max(memory_total) * 100, 2) as user_rate
 from gpu_list c

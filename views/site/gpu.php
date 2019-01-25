@@ -21,6 +21,7 @@ AppAsset::addCss($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.css')
 AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/morris.min.js');
 AppAsset::addScript($this, '/nifty-v2.2/template/plugins/morris-js/raphael-js/raphael.min.js');
 AppAsset::addScript($this, '/js/gpu.js');
+AppAsset::addCss($this, '/css/customer.css', ["position" => View::PH_HEAD]);
 AppAsset::register($this);
 
 $faker = Factory::create();
@@ -161,7 +162,11 @@ $faker = Factory::create();
                                     ?>
                                     <!--Small-->
                                     <!--===================================================-->
-                                    <p><?= $item['username'] ?> [process: <?= $item['ps_amount'] ?>]</p>
+                                    <p class="add-popover" data-toggle="popover" data-placement="right"
+                                       data-content='<p style="display:list-item;text-align-last:left;word-break:break-all"><?= $item['cmdline'] ?></p>'
+                                       data-html="true"
+                                       style="cursor: pointer; display: inline-block"><?= $item['username'] ?>
+                                        [process: <?= $item['ps_amount'] ?>]</p>
                                     <div class="progress">
                                         <div style="width: <?= $item['user_rate'] ?>%;
                                                 background-color: <?= $faker->safeHexColor ?>"
