@@ -88,6 +88,7 @@ EOF;
             $sql = <<<EOF
 select gpu_order,
        b.username,
+       GROUP_CONCAT(b.cmdline SEPARATOR '\n') as cmdline,
        count(1)                                                  as ps_amount,
        round(sum(gpu_memory_usage) / max(memory_total) * 100, 2) as user_rate
 from gpu_list c
@@ -112,6 +113,7 @@ EOF;
                 $tmp_item = [];
                 $tmp_item['username'] = $item['username'];
                 $tmp_item['ps_amount'] = $item['ps_amount'];
+                $tmp_item['cmdline'] = $item['cmdline'];
                 $tmp_item['user_rate'] = $item['user_rate'];
                 $users[$gpu_order][] = $tmp_item;
             }
