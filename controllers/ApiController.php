@@ -69,6 +69,7 @@ class ApiController extends RestController
                         $new_ps->log_id = $new_gpu_log->log_id;
                         $new_ps->username = $ps['username'];
                         $new_ps->command = $ps['command'];
+                        $new_ps->cmdline = $ps['cmdline'];
                         $new_ps->gpu_memory_usage = $ps['gpu_memory_usage'];
                         $new_ps->pid = $ps['pid'];
                         $new_ps->add_time = $current_time;
