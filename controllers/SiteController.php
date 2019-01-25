@@ -40,10 +40,10 @@ class SiteController extends Controller
             $gpus = [];
             $sql = <<<EOF
 select c.gpu_order, utilization as power_rate, round(memory_used / memory_total * 100, 2) as memory_rate, d.add_time
-from gpu_list c left join gpu_log d on c.gpu_id = d.gpu_id
+from gpu_list c left join gpu_log d use index (`PRIMARY`) on c.gpu_id = d.gpu_id
 where log_id in (select max(b.log_id) as log_id
                  from gpu_list a
-                        left join gpu_log b on a.gpu_id = b.gpu_id
+                        left join gpu_log b use index (`PRIMARY`) on a.gpu_id = b.gpu_id
                  where a.cluster = :cluster
                  group by b.gpu_id)
 EOF;
@@ -63,14 +63,14 @@ EOF;
             $sql = <<<EOF
 select gpu_order, count(1) as ps_amount
 from gpu_list c
-       left join gpu_log a on c.gpu_id = a.gpu_id
+       left join gpu_log a use index (`PRIMARY`) on c.gpu_id = a.gpu_id
        inner join gpu_ps b on a.log_id = b.log_id
 where a.log_id in (select max(b.log_id) as log_id
                    from gpu_list a
-                          left join gpu_log b on a.gpu_id = b.gpu_id
+                          left join gpu_log b use index (`PRIMARY`) on a.gpu_id = b.gpu_id
                    where a.cluster = :cluster
                    group by b.gpu_id)
-group by a.gpu_id;
+group by a.gpu_id
 EOF;
             $ret = \Yii::$app->getDb()->createCommand($sql, [
                 ':cluster' => $params['cluster']
@@ -92,11 +92,11 @@ select gpu_order,
        count(1)                                                  as ps_amount,
        round(sum(gpu_memory_usage) / max(memory_total) * 100, 2) as user_rate
 from gpu_list c
-       left join gpu_log a on c.gpu_id = a.gpu_id
+       left join gpu_log a use index (`PRIMARY`) on c.gpu_id = a.gpu_id
        inner join gpu_ps b on a.log_id = b.log_id
 where a.log_id in (select max(b.log_id) as log_id
                    from gpu_list a
-                          left join gpu_log b on a.gpu_id = b.gpu_id
+                          left join gpu_log b use index (`PRIMARY`) on a.gpu_id = b.gpu_id
                    where a.cluster = :cluster
                    group by b.gpu_id)
 group by a.gpu_id, b.username
