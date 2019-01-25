@@ -10,7 +10,7 @@ use yii\web\Response;
 class SiteController extends Controller
 {
     const KEY = "SiteController_";
-    const EXPIRE = 3;
+    const EXPIRE = 30;
 
     /**
      * Displays homepage.
