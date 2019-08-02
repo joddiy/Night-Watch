@@ -35,7 +35,7 @@ class HelloController extends Controller
 
     public function actionRenew()
     {
-        $today =  date("Y-m-d");
+        $today =  date("Y_m_d");
         $sql = <<<EOF
 RENAME TABLE gpu_log TO gpu_log_{$today};
 EOF;
