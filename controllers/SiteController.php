@@ -30,6 +30,8 @@ class SiteController extends Controller
         if (empty($params['cluster'])) {
             $params['cluster'] = "ncra";
         }
+
+
         // cluster and gpu amount
         $redis_key = self::KEY . md5("get_gpu_panel_" . $params['cluster']);
         $cache = Yii::$app->redis->get($redis_key);
@@ -59,6 +61,8 @@ EOF;
                 $gpus[$gpu_order]['memory_rate'] = $item['memory_rate'];
                 $gpus[$gpu_order]['add_time'] = $item['add_time'];
             }
+
+
             # current ps
             $sql = <<<EOF
 select gpu_order, count(1) as ps_amount
