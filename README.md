@@ -31,7 +31,7 @@ This script will upload its gpu info to the host.
 git clone https://github.com/joddiy/Night-Watch.git
 ```
 
-Please add a ```db.php``` file at config directory, and its content as following:
+Please add a ```db.php``` file at ```config``` directory, and its content as following:
 ```
 <?php
 
@@ -46,7 +46,7 @@ return [
 
 (Optinal) Add the following scheduler to your crontab:
 ```
-0 4 1 * * /usr/bin/php5.6 /home/worker/Night-Watch/yii hello/renew
+0 4 1 * * /usr/bin/php5.6 /PATHTO/Night-Watch/yii hello/renew
 ```
 This script will archive old logs and create new tables for new logs.
 
