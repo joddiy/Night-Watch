@@ -3,32 +3,60 @@
 
 # Installation
 
-## python
+## Guest machine:
 
-At the guest machine:
+Install required package:
 ```
 sudo apt install python-pip
 sudo pip install gpustat
 sudo pip install requests
 ```
 
-## crontab
 
-At the guest machine:
+Download the script:
 ```
-* * * * * /usr/bin/python /home/worker/Night-Watch/py/watch_gpu.py
+wget https://github.com/joddiy/Night-Watch/blob/master/py/watch_gpu.py
+```
+
+
+Add the following scheduler to your crontab:
+```
+* * * * * /usr/bin/python /PATHTO/watch_gpu.py
 ```
 This script will upload its gpu info to the host.
 
-At the host machine:
+## Host machine:
+
+```
+git clone https://github.com/joddiy/Night-Watch.git
+```
+
+Please add a ```db.php``` file at config directory, and its content as following:
+```
+<?php
+
+return [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=HOSTNAME;dbname=night_watch',
+    'username' => 'USERNAME',
+    'password' => 'PASSWORD',
+    'charset' => 'utf8',
+];
+```
+
+(Optinal) Add the following scheduler to your crontab:
 ```
 0 4 1 * * /usr/bin/php5.6 /home/worker/Night-Watch/yii hello/renew
 ```
-This script will archive gpu logs.
+This script will archive old logs and create new tables for new logs.
 
-### mysql table
 
-gpu_list
+## For Mysql
+
+You need to create three tables:
+
+### gpu_list
+
 ```
 create table night_watch.gpu_list
 (
@@ -41,7 +69,7 @@ create table night_watch.gpu_list
 ```
 This table records your gpu info. Please be cafeful, your guest machine's host name should be identical with the cluster field here.
 
-gpu_log
+### gpu_log
 ```
 create table night_watch.gpu_log
 (
@@ -65,7 +93,7 @@ create index gpu_log_gpu_id_index
 ```
 This table records each gpu's logs.
 
-gpu_ps
+### gpu_ps
 ```
 create table night_watch.gpu_ps
 (
