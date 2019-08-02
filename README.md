@@ -2,6 +2,7 @@ Nothing new here.
 
 ## python
 
+At the guest machine:
 ```
 sudo apt install python-pip
 sudo pip install gpustat
@@ -10,7 +11,17 @@ sudo pip install requests
 
 ## crontab
 
-```* * * * * /usr/bin/python /home/worker/Night-Watch/py/watch_gpu.py```
+At the guest machine:
+```
+* * * * * /usr/bin/python /home/worker/Night-Watch/py/watch_gpu.py
+```
+This script will upload its gpu info to the host.
+
+At the host machine:
+```
+0 4 1 * * /usr/bin/php5.6 /home/worker/Night-Watch/yii hello/renew
+```
+This script will archive gpu logs.
 
 ### mysql table
 
@@ -23,10 +34,9 @@ create table night_watch.gpu_list
   cluster   varchar(20)                         not null,
   gpu_order int                                 not null,
   add_time  timestamp default CURRENT_TIMESTAMP not null
-)
-  comment 'gpu list';
-
+);
 ```
+This table records your gpu info. Please be cafeful, your guest machine's host name should be identical with the cluster field here.
 
 gpu_log
 ```
@@ -49,8 +59,8 @@ create index gpu_log_add_time_index
 
 create index gpu_log_gpu_id_index
   on night_watch.gpu_log (gpu_id);
-
 ```
+This table records each gpu's logs.
 
 gpu_ps
 ```
@@ -73,6 +83,5 @@ create index gpu_ps_add_time_index
 
 create index gpu_ps_log_id_index
   on night_watch.gpu_ps (log_id);
-
-
 ```
+This table records each user's logs.
