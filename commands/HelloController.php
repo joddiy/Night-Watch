@@ -38,7 +38,10 @@ class HelloController extends Controller
         $today =  date("Y-m-d");
         $sql = <<<EOF
 RENAME TABLE gpu_log TO gpu_log_{$today};
+EOF;
+        \Yii::$app->getDb()->createCommand($sql)->execute();
 
+        $sql = <<<EOF
 create table night_watch.gpu_log
 (
   log_id       int auto_increment
@@ -58,9 +61,15 @@ create index gpu_log_add_time_index
 
 create index gpu_log_gpu_id_index
   on night_watch.gpu_log (gpu_id);
+EOF;
+        \Yii::$app->getDb()->createCommand($sql)->execute();
 
+        $sql = <<<EOF
 RENAME TABLE gpu_ps TO gpu_ps_{$today};
+EOF;
+        \Yii::$app->getDb()->createCommand($sql)->execute();
 
+        $sql = <<<EOF
 create table night_watch.gpu_ps
 (
   id               int auto_increment
@@ -72,8 +81,7 @@ create table night_watch.gpu_ps
   gpu_memory_usage int                                 not null,
   pid              int                                 not null,
   add_time         timestamp default CURRENT_TIMESTAMP not null
-)
-  comment 'gpu process';
+);
 
 create index gpu_ps_add_time_index
   on night_watch.gpu_ps (add_time);
@@ -82,6 +90,7 @@ create index gpu_ps_log_id_index
   on night_watch.gpu_ps (log_id);
 EOF;
         \Yii::$app->getDb()->createCommand($sql)->execute();
+
 
     }
 }
